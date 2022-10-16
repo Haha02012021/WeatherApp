@@ -8,7 +8,6 @@ const screenWidth = Dimensions.get("window").width;
 export default function NowWeather({ nowWeather }) {
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
         <Text style={[styles.text, styles.place]}>{nowWeather.place}</Text>
         <Text style={[styles.text, styles.nowTemp]}>{nowWeather.temp}°</Text>
         <Text style={[styles.text, styles.weatherStatus]}>
@@ -18,19 +17,12 @@ export default function NowWeather({ nowWeather }) {
           <Text style={styles.text}>H: {nowWeather.max_temp}°</Text>
           <Text style={styles.text}>L: {nowWeather.min_temp}°</Text>
         </View>
-      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
-    width: "50%",
-    top: "10%",
-    left: screenWidth / 4,
-  },
-  content: {
     width: "100%",
     display: "flex",
     flexDirection: "column",
@@ -55,7 +47,7 @@ const styles = StyleSheet.create({
   tempLimit: {
     display: "flex",
     flexDirection: "row",
-    width: "60%",
+    width: "40%",
     justifyContent: "space-between",
   },
 });

@@ -5,7 +5,7 @@ import { StyleSheet, View } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { TouchableNativeFeedback } from "react-native";
 
-const widthScreen = Dimensions.get("window").width;
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function TabBar() {
   return (
@@ -63,27 +63,24 @@ function Back() {
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
-    bottom: 0,
     width: "100%",
-    zIndex: 4,
   },
-  curveShape: {
-    // position: "absolute",
-    borderLeftColor: "transparent",
-    borderRightColor: "transparent",
-    borderTopColor: "transparent",
-    borderBottomColor: "rgba(117, 130, 244, 0.5)",
-    bottom: 60,
-    zIndex: 2,
-    borderWidth: 1,
-    borderRadius: (widthScreen * 1.2) / 2,
-    width: widthScreen * 1.2,
-    backgroundColor: "transparent",
-    height: widthScreen * 1.2,
-    left: -widthScreen * 0.1,
-    transform: [{ scaleX: 1.5 }],
-  },
+  // curveShape: {
+  //   // position: "absolute",
+  //   borderLeftColor: "transparent",
+  //   borderRightColor: "transparent",
+  //   borderTopColor: "transparent",
+  //   borderBottomColor: "rgba(117, 130, 244, 0.5)",
+  //   bottom: 60,
+  //   zIndex: 2,
+  //   borderWidth: 1,
+  //   borderRadius: (SCREEN_WIDTH * 1.2) / 2,
+  //   width: SCREEN_WIDTH * 1.2,
+  //   backgroundColor: "transparent",
+  //   height: SCREEN_WIDTH * 1.2,
+  //   left: -SCREEN_WIDTH * 0.1,
+  //   transform: [{ scaleX: 1.5 }],
+  // },
   front: {
     position: "absolute",
     width: "100%",

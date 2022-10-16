@@ -7,7 +7,7 @@ export default function Welcome({ navigation }) {
   useEffect(() => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 10000,
+      duration: 1000,
       useNativeDriver: true,
     }).start();
 
@@ -17,7 +17,7 @@ export default function Welcome({ navigation }) {
   }, [fadeAnim]);
 
   return (
-    <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+    <Animated.View style={[styles.container]}>
       <Text style={styles.content}>TODAY'S WEATHER</Text>
     </Animated.View>
   );

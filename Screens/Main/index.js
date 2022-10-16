@@ -1,15 +1,13 @@
-import { useEffect } from "react";
-import {
-  Animated,
-  BackHandler,
-  Image,
-  ImageBackground,
-  StyleSheet,
-  View,
-} from "react-native";
-import Content from "./Content";
+import { useEffect, useRef } from "react";
+import { BackHandler, Image, ImageBackground, StyleSheet } from "react-native";
+import BottomSheet from "./BottomSheet";
 import NowWeather from "./NowWeather";
 import TabBar from "./TabBar";
+// import BottomSheet from "reanimated-bottom-sheet";
+// import { Animated } from "react-native";
+import { View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Dimensions } from "react-native";
 
 const nowWeather = {
   place: "Hà Nội",
@@ -18,7 +16,9 @@ const nowWeather = {
   weather_status: "Trời quang",
   max_temp: 24,
   min_temp: 19,
-}
+};
+
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 export default function Main({ navigation }) {
   useEffect(() => {
@@ -35,39 +35,54 @@ export default function Main({ navigation }) {
   }, []);
 
   return (
-    <Animated.View style={styles.container}>
-      <ImageBackground
-        source={require("../../assets/main-background.jpg")}
-        resizeMode="cover"
-        style={styles.imageBackground}
-      >
-        <NowWeather nowWeather={nowWeather} />
-        <Image
-          source={require("../../assets/House.png")}
-          style={styles.image}
-        />
-        <TabBar />
-        <Content />
-      </ImageBackground>
-    </Animated.View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <ImageBackground
+          source={require("../../assets/main-background.jpg")}
+          resizeMode="cover"
+          style={styles.imageBackground}
+        >
+          <View style={styles.content}>
+            <NowWeather nowWeather={nowWeather} />
+            <Image
+              source={require("../../assets/House.png")}
+              resizeMode="cover"
+              style={styles.image}
+            />
+          </View>
+          <View style={styles.tabBar}>
+            <TabBar />
+          </View>
+        </ImageBackground>
+      </View>
+      <BottomSheet />
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    zIndex: -1,
-    position: "relative",
+    alignItems: "center",
+    justifyContent: "center",
   },
   imageBackground: {
     flex: 1,
-    justifyContent: "center",
-    position: "relative",
+    justifyContent: "flex-start",
+    width: SCREEN_WIDTH,
+    height: "100%",
   },
   image: {
-    width: "100%",
+    width: SCREEN_WIDTH,
     zIndex: 2,
+  },
+  content: {
+    top: "8%",
+  },
+  tabBar: {
     position: "absolute",
-    bottom: 200,
+    width: SCREEN_WIDTH,
+    bottom: 0,
+    zIndex: 4,
   },
 });
