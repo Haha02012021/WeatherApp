@@ -50,9 +50,6 @@ export default function Main({ navigation }) {
               style={styles.image}
             />
           </View>
-          <View style={styles.tabBar}>
-            <TabBar />
-          </View>
         </ImageBackground>
       </View>
       <BottomSheet />
@@ -75,14 +72,9 @@ const styles = StyleSheet.create({
   image: {
     width: SCREEN_WIDTH,
     zIndex: 2,
+    bottom: -32,
   },
   content: {
     top: "8%",
-  },
-  tabBar: {
-    position: "absolute",
-    width: SCREEN_WIDTH,
-    bottom: 0,
-    zIndex: 4,
   },
 });

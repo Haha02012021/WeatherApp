@@ -3,17 +3,64 @@ import { LinearGradient } from "expo-linear-gradient";
 import { View } from "react-native";
 import { Dimensions } from "react-native";
 import { Text } from "react-native";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import {
+  Gesture,
+  GestureDetector,
+  ScrollView,
+} from "react-native-gesture-handler";
 import Animated, {
   Extrapolate,
   interpolate,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  withTiming,
 } from "react-native-reanimated";
-import TabBar from "./TabBar";
 import { useCallback, useEffect } from "react";
+import Card from "../../Components/Card";
+import TabBar from "./TabBar";
+
+const hourlys = [
+  {
+    hour: "12 AM",
+    degree: "19",
+    degree_unit: "C",
+  },
+  {
+    hour: "1 AM",
+    degree: "19",
+    degree_unit: "C",
+  },
+  {
+    hour: "1 AM",
+    degree: "19",
+    degree_unit: "C",
+  },
+  {
+    hour: "1 AM",
+    degree: "19",
+    degree_unit: "C",
+  },
+  {
+    hour: "1 AM",
+    degree: "19",
+    degree_unit: "C",
+  },
+  {
+    hour: "1 AM",
+    degree: "19",
+    degree_unit: "C",
+  },
+  {
+    hour: "1 AM",
+    degree: "19",
+    degree_unit: "C",
+  },
+  {
+    hour: "1 AM",
+    degree: "19",
+    degree_unit: "C",
+  },
+];
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const MAX_TRANSLATE_Y = -SCREEN_HEIGHT / 1.3;
@@ -39,8 +86,7 @@ export default function BottomSheet() {
     .onEnd(() => {
       if (translateY.value > -SCREEN_HEIGHT / 8 - 100) {
         scrollTo(-SCREEN_HEIGHT / 8);
-      } else
-        if (translateY.value < -SCREEN_HEIGHT / 8 + 100) {
+      } else if (translateY.value < -SCREEN_HEIGHT / 8 + 100) {
         scrollTo(MAX_TRANSLATE_Y);
       }
     });
@@ -65,35 +111,108 @@ export default function BottomSheet() {
   const rShortInfo = useAnimatedStyle(() => {
     return {
       display: "flex",
-    }
-  })
+    };
+  });
+
+  const rWidetStyle = useAnimatedStyle(() => {
+    const marginTop = interpolate(
+      translateY.value,
+      [MAX_TRANSLATE_Y + SCREEN_HEIGHT, MAX_TRANSLATE_Y],
+      [240, 40],
+      Extrapolate.CLAMP
+    );
+    return {
+      marginTop,
+    };
+  });
+
+  const rTabBarStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(
+      translateY.value,
+      [MAX_TRANSLATE_Y + SCREEN_HEIGHT, MAX_TRANSLATE_Y],
+      [1, 0],
+      Extrapolate.CLAMP
+    );
+
+    return {
+      opacity,
+    };
+  });
   return (
     <GestureDetector gesture={gesture}>
-      <Animated.View style={[styles.container, rContainerStyle]}>
-        <Animated.View style={[styles.shortInfo, rShortInfo]}>
-          <Text>Info</Text>
-        </Animated.View>
-        <View style={styles.header}>
-          <View style={styles.shape} />
-          <LinearGradient
-            colors={[
-              "rgba(255, 255, 255, 0)",
-              "rgba(255, 255, 255, 0.4)",
-              "rgba(255, 255, 255, 0)",
-            ]}
-            start={[0.1, 0.6]}
-            end={[0.6, 0.2]}
-            style={[styles.bottom]}
-          ></LinearGradient>
-          <View style={styles.headerActions}>
-            <Text style={styles.actionText}>Dự báo trong ngày</Text>
-            <Text style={styles.actionText}>Dự báo trong tuần</Text>
+      <>
+        <Animated.View style={[styles.container, rContainerStyle]}>
+          <View style={styles.header}>
+            <View style={styles.shape} />
+            <LinearGradient
+              colors={[
+                "rgba(255, 255, 255, 0)",
+                "rgba(255, 255, 255, 0.4)",
+                "rgba(255, 255, 255, 0)",
+              ]}
+              start={[0.5, 0.8]}
+              end={[0.8, 0.5]}
+              style={[styles.top]}
+            ></LinearGradient>
+            <LinearGradient
+              colors={[
+                "rgba(255, 255, 255, 0)",
+                "rgba(255, 255, 255, 0.4)",
+                "rgba(255, 255, 255, 0)",
+              ]}
+              start={[0.1, 0.6]}
+              end={[0.6, 0.2]}
+              style={[styles.bottom]}
+            ></LinearGradient>
+            <View style={styles.headerActions}>
+              <Text style={styles.actionText}>Dự báo trong ngày</Text>
+              <Text style={styles.actionText}>Dự báo trong tuần</Text>
+            </View>
           </View>
-        </View>
-        <View
-          style={styles.light}
-        ></View>
-      </Animated.View>
+          <View style={styles.light}></View>
+          <View style={[styles.content]}>
+            <View style={styles.hourlyList}>
+              <ScrollView
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+              >
+                {hourlys.map((hourly, index) => {
+                  return (
+                    <View key={index} style={styles.hourly}>
+                      <Text style={[styles.hourlyText, styles.hour]}>
+                        {hourly.hour}
+                      </Text>
+                      <View>
+                        <Text class={styles.hourlyText}></Text>
+                      </View>
+                      <Text style={[styles.hourlyText, styles.degree]}>
+                        {hourly.degree}°
+                      </Text>
+                    </View>
+                  );
+                })}
+              </ScrollView>
+            </View>
+            <Animated.View style={[styles.widget, rWidetStyle]}>
+              <Card
+                iconName={"sun"}
+                cardName="Mức độ tia UV"
+                value={4}
+                note="Vừa phải"
+              />
+              <Card
+                iconName={"sunrise"}
+                cardName="Mặt trời mọc"
+                value={"5:00 AM"}
+                smallNote="Mặt trời lặn: 7:00 PM"
+              />
+            </Animated.View>
+          </View>
+        </Animated.View>
+        <Animated.View style={[styles.tabBar, rTabBarStyle]}>
+          <TabBar />
+        </Animated.View>
+      </>
     </GestureDetector>
   );
 }
@@ -101,7 +220,7 @@ export default function BottomSheet() {
 const styles = StyleSheet.create({
   container: {
     zIndex: 3,
-    top: SCREEN_HEIGHT / 1.3,
+    top: SCREEN_HEIGHT / 1.25,
     position: "absolute",
     borderTopWidth: 1,
     borderLeftWidth: 0.5,
@@ -128,6 +247,15 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     zIndex: 2,
+  },
+  top: {
+    width: SCREEN_WIDTH / 2,
+    left: SCREEN_WIDTH / 4,
+    top: -5.5,
+    height: 2.5,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 44,
   },
   bottom: {
     width: SCREEN_WIDTH,
@@ -185,5 +313,65 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 8,
     letterSpacing: -0.5,
+  },
+
+  hourlyList: {
+    top: 32,
+    left: 20,
+    right: 20,
+    width: SCREEN_WIDTH - 26 * 2,
+  },
+  hourly: {
+    height: 146,
+    width: 60,
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    borderWidth: 2,
+    borderRadius: 30,
+    borderColor: "rgba(0, 0, 0, 0.2)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    marginLeft: 6,
+    marginRight: 6,
+  },
+  hourlyText: {
+    color: "white",
+  },
+  hour: {
+    fontSize: 15,
+    fontWeight: "600",
+    lineHeight: 20,
+    letterSpacing: -0.5,
+  },
+  degree: {
+    fontSize: 20,
+    fontWeight: "400",
+    letterSpacing: 0.38,
+    lineHeight: 24,
+  },
+
+  testContainer: {
+    flex: 1,
+    //paddingTop: StatusBar.currentHeight,
+    height: 40,
+  },
+  testScrollView: {
+    backgroundColor: "pink",
+    marginHorizontal: 20,
+  },
+  testText: {
+    fontSize: 42,
+  },
+  widget: {
+    marginLeft: 26,
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+  tabBar: {
+    position: "absolute",
+    width: SCREEN_WIDTH,
+    bottom: 0,
+    zIndex: 4,
   },
 });
