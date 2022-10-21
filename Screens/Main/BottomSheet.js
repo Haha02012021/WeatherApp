@@ -18,6 +18,7 @@ import Animated, {
 import { useCallback, useEffect } from "react";
 import Card from "../../Components/Card";
 import TabBar from "./TabBar";
+import { Image } from "react-native";
 
 const hourlys = [
   {
@@ -186,7 +187,14 @@ export default function BottomSheet({ nowWeather }) {
                         {hourly.hour}
                       </Text>
                       <View>
-                        <Text class={styles.hourlyText}></Text>
+                        <Image
+                          source={require("../../assets/weather_icons/moon/1.png")}
+                          resizeMode="contain"
+                          style={{
+                            height: 32,
+                          }}
+                        />
+                        {/* <Text style={styles.hourlyText}></Text> */}
                       </View>
                       <Text style={[styles.hourlyText, styles.degree]}>
                         {hourly.degree}°
