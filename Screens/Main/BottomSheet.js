@@ -65,7 +65,7 @@ const hourlys = [
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const MAX_TRANSLATE_Y = -SCREEN_HEIGHT / 1.3;
 
-export default function BottomSheet() {
+export default function BottomSheet({ nowWeather }) {
   const translateY = useSharedValue(0);
   const context = useSharedValue({ y: 0 });
 
@@ -108,12 +108,6 @@ export default function BottomSheet() {
     };
   });
 
-  const rShortInfo = useAnimatedStyle(() => {
-    return {
-      display: "flex",
-    };
-  });
-
   const rWidetStyle = useAnimatedStyle(() => {
     const marginTop = interpolate(
       translateY.value,
@@ -138,10 +132,19 @@ export default function BottomSheet() {
       opacity,
     };
   });
+
   return (
     <GestureDetector gesture={gesture}>
       <>
         <Animated.View style={[styles.container, rContainerStyle]}>
+          <Animated.View style={[styles.nowWeather]}>
+            <Text style={{ fontSize: 34, color: "rgba(255, 255, 255, 0.7)" }}>
+              {nowWeather.place}
+            </Text>
+            <Text style={{ fontSize: 20, color: "rgba(255, 255, 255, 0.4)" }}>
+              {nowWeather.temp}|{nowWeather.weather_status}
+            </Text>
+          </Animated.View>
           <View style={styles.header}>
             <View style={styles.shape} />
             <LinearGradient
@@ -193,20 +196,85 @@ export default function BottomSheet() {
                 })}
               </ScrollView>
             </View>
-            <Animated.View style={[styles.widget, rWidetStyle]}>
-              <Card
-                iconName={"sun"}
-                cardName="Mức độ tia UV"
-                value={4}
-                note="Vừa phải"
-              />
-              <Card
-                iconName={"sunrise"}
-                cardName="Mặt trời mọc"
-                value={"5:00 AM"}
-                smallNote="Mặt trời lặn: 7:00 PM"
-              />
-            </Animated.View>
+            <ScrollView>
+              <Animated.View style={[styles.widget, rWidetStyle]}>
+                <Card
+                  iconName={"sun"}
+                  cardName="Mức độ tia UV"
+                  value={4}
+                  note="Vừa phải"
+                />
+                <Card
+                  iconName={"sunrise"}
+                  cardName="Mặt trời mọc"
+                  value={"5:00 AM"}
+                  smallNote={
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 12,
+                        opacity: 0.7,
+                      }}
+                    >
+                      Mặt trời lặn: 7:00 PM
+                    </Text>
+                  }
+                />
+                <Card iconName={"wind"} cardName="Gió" value={"9.7 km/h"} />
+                <Card
+                  iconName={"drop"}
+                  iconType={"entypo"}
+                  cardName="Lượng mưa"
+                  value={"1.8 mm"}
+                  note="vào giờ trước"
+                  smallNote={
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 12,
+                        opacity: 0.7,
+                      }}
+                    >
+                      Dự đoán 1.2 mm trong 24 giờ tiếp theo.
+                    </Text>
+                  }
+                />
+                <Card
+                  iconName={"thermometer-1"}
+                  iconType={"font-awesome"}
+                  cardName="Cảm giác như"
+                  value="19°"
+                  smallNote={
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 12,
+                        opacity: 0.7,
+                      }}
+                    >
+                      Giống nhiệt độ thực tế.
+                    </Text>
+                  }
+                />
+                <Card
+                  iconName={"water"}
+                  iconType={"font-awesome-5"}
+                  cardName="Độ ẩm"
+                  value={"90%"}
+                  smallNote={
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 12,
+                        opacity: 0.7,
+                      }}
+                    >
+                      Điểm sương bây giờ là 17.
+                    </Text>
+                  }
+                />
+              </Animated.View>
+            </ScrollView>
           </View>
         </Animated.View>
         <Animated.View style={[styles.tabBar, rTabBarStyle]}>
@@ -231,6 +299,15 @@ const styles = StyleSheet.create({
     borderRadius: 44,
     opacity: 0.95,
     backgroundColor: "#2E335A",
+  },
+  nowWeather: {
+    top: -124,
+    backgroundColor: "#2E335A",
+    opacity: 0.95,
+    padding: 8,
+    flexDirection: "column",
+    alignItems: "center",
+    display: "none",
   },
   linearGradient: {
     position: "absolute",

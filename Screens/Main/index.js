@@ -52,7 +52,7 @@ export default function Main({ navigation }) {
           </View>
         </ImageBackground>
       </View>
-      <BottomSheet />
+      <BottomSheet nowWeather={nowWeather} />
     </GestureHandlerRootView>
   );
 }

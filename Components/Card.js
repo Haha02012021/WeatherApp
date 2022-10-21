@@ -6,13 +6,20 @@ import { View } from "react-native";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-export default function Card({ iconName, cardName, value, note, smallNote }) {
+export default function Card({
+  iconName,
+  iconType = "feather",
+  cardName,
+  value,
+  note,
+  smallNote,
+}) {
   return (
     <View style={styles.card}>
       <View style={styles.header}>
         <Icon
           name={iconName}
-          type="feather"
+          type={iconType}
           color="rgba(235, 235, 245, 0.6)"
           size={20}
         />
@@ -21,7 +28,7 @@ export default function Card({ iconName, cardName, value, note, smallNote }) {
       <View>
         <Text style={styles.value}>{value}</Text>
         <Text style={styles.note}>{note}</Text>
-        <Text style={styles.smallNote}>{smallNote}</Text>
+        <View>{smallNote}</View>
       </View>
     </View>
   );
@@ -40,6 +47,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     alignSelf: "flex-start",
     marginHorizontal: "2%",
+    marginVertical: "2%",
   },
   header: {
     display: "flex",
@@ -54,13 +62,11 @@ const styles = StyleSheet.create({
   value: {
     color: "white",
     fontSize: 28,
+    opacity: 0.7,
   },
   note: {
     color: "white",
     fontSize: 16,
-  },
-  smallNote: {
-    color: "white",
-    fontSize: 12,
+    opacity: 0.7,
   },
 });
