@@ -26,15 +26,22 @@ export default function Main({ navigation }) {
     navigation.addListener("beforeRemove", (e) => {
       e.preventDefault();
     });
-    BackHandler.addEventListener("hardwareBackPress", () => {
-      BackHandler.exitApp();
-    });
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        if (navigation.getState().index === 1) {
+          BackHandler.exitApp();
+          return true;
+        }
+        return false;
+      }
+    );
 
     return () => {
-      BackHandler.removeEventListener("hardwareBackPress");
+      navigation.removeListener("beforeRemove");
+      backHandler.remove();
     };
-  }, []);
-
+  }, [navigation]);
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>

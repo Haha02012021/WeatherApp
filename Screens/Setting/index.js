@@ -6,11 +6,9 @@ import { AppContext } from "../../Providers/AppProvider";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RectButton } from "react-native-gesture-handler";
 import { Button } from "@rneui/themed";
-import { useNavigation } from "@react-navigation/native";
 
 export default function Setting() {
   const { isTheFirst, setTheFirst } = useContext(AppContext);
-  const navigation = useNavigation();
   useEffect(() => {
     const createAppKey = async () => {
       await AsyncStorage.setItem("@weatherAppKey", "my weather app");

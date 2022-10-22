@@ -1,4 +1,4 @@
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Welcome from "./Screens/Welcome";
 import Main from "./Screens/Main";
@@ -6,6 +6,8 @@ import SearchAdd from "./Screens/SearchAdd";
 import Setting from "./Screens/Setting";
 import AppProvider from "./Providers/AppProvider";
 import FollowedCityList from "./Screens/FollowedCityList";
+import { useEffect } from "react";
+import { BackHandler } from "react-native";
 
 const Stack = createNativeStackNavigator();
 
