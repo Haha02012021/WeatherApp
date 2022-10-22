@@ -37,6 +37,11 @@ function Front() {
 }
 
 function Back() {
+  const navigation = useNavigation();
+
+  const handleOpenBars = () => {
+    navigation.navigate("FollowedCities");
+  };
   return (
     <View style={styles.back}>
       <Icon
@@ -46,13 +51,15 @@ function Back() {
         style={styles.backIcon}
         size={28}
       />
-      <Icon
-        name="bars"
-        type="font-awesome-5"
-        color={"white"}
-        style={styles.backIcon}
-        size={28}
-      />
+      <TouchableOpacity onPress={handleOpenBars}>
+        <Icon
+          name="bars"
+          type="font-awesome-5"
+          color={"white"}
+          style={styles.backIcon}
+          size={28}
+        />
+      </TouchableOpacity>
     </View>
   );
 }

@@ -87,7 +87,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     paddingTop: 28,
-    paddingBottom: 20,
     marginVertical: 20,
   },
   leftAccessory: {

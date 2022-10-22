@@ -3,19 +3,23 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Welcome from "./Screens/Welcome";
 import Main from "./Screens/Main";
 import SearchAdd from "./Screens/SearchAdd";
+import Setting from "./Screens/Setting";
+import AppProvider from "./Providers/AppProvider";
+import FollowedCityList from "./Screens/FollowedCityList";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <>
+    <AppProvider>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{ gestureEnabled: true }}>
           <Stack.Screen
             name="Welcome"
             component={Welcome}
             options={{ headerShown: false }}
           />
+          <Stack.Screen name="Setting" component={Setting} />
           <Stack.Screen
             name="Main"
             component={Main}
@@ -31,8 +35,9 @@ export default function App() {
               headerShown: false,
             }}
           />
+          <Stack.Screen name="FollowedCities" component={FollowedCityList} />
         </Stack.Navigator>
       </NavigationContainer>
-    </>
+    </AppProvider>
   );
 }

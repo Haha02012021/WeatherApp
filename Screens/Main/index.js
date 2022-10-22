@@ -8,6 +8,7 @@ import TabBar from "./TabBar";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Dimensions } from "react-native";
+import { Icon } from "@rneui/themed";
 
 const nowWeather = {
   place: "Hà Nội",
@@ -75,6 +76,7 @@ const styles = StyleSheet.create({
     bottom: -32,
   },
   content: {
+    position: "absolute",
     top: "8%",
   },
 });

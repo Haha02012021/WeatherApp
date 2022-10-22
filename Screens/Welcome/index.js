@@ -1,8 +1,36 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Animated, StyleSheet, Text, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AppContext } from "../../Providers/AppProvider";
 
 export default function Welcome({ navigation }) {
   const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+  const { isTheFirst, setTheFirst } = useContext(AppContext);
+
+  useEffect(() => {
+    const getAppKey = async () => {
+      try {
+        const weatherAppKey = await AsyncStorage.getItem("@weatherAppKey");
+
+        if (weatherAppKey) {
+          setTheFirst(false);
+
+          setTimeout(() => {
+            navigation.navigate("Main");
+          }, 1100);
+        } else {
+          setTheFirst(true);
+          setTimeout(() => {
+            navigation.navigate("Setting");
+          }, 1100);
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    getAppKey();
+  }, []);
 
   useEffect(() => {
     Animated.timing(fadeAnim, {
@@ -10,10 +38,6 @@ export default function Welcome({ navigation }) {
       duration: 1000,
       useNativeDriver: true,
     }).start();
-
-    setTimeout(() => {
-      navigation.navigate("Main");
-    }, 1100);
   }, [fadeAnim]);
 
   return (

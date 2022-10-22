@@ -1,5 +1,6 @@
 import { Image } from "react-native";
 import { Text } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Dimensions } from "react-native";
 import { StyleSheet } from "react-native";
 import { View } from "react-native";
@@ -8,26 +9,31 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function Widget({ weatherInfo }) {
   return (
-    <View style={{ marginBottom: "8%" }}>
-      <Image
-        source={require("../assets/WidgetDeco.png")}
-        resizeMode="stretch"
-        style={{ width: SCREEN_WIDTH - 20 * 2 - 4, height: (400 / 342) * 184 }}
-      />
-      <Image
-        source={require("../assets/weather_icons/moon/2.png")}
-        resizeMode="contain"
-        style={styles.weatherIcon}
-      />
-      <Text style={styles.degree}>{weatherInfo.degree}°</Text>
-      <View style={styles.bottom}>
-        <Text style={styles.degreeLimit}>
-          H: {weatherInfo.maxDegree}° L: {weatherInfo.minDegree}°
-        </Text>
-        <Text style={styles.city}>{weatherInfo.city}</Text>
+    <TouchableOpacity>
+      <View style={{ marginBottom: "8%" }}>
+        <Image
+          source={require("../assets/WidgetDeco.png")}
+          resizeMode="stretch"
+          style={{
+            width: SCREEN_WIDTH - 20 * 2 - 4,
+            height: (400 / 342) * 184,
+          }}
+        />
+        <Image
+          source={require("../assets/weather_icons/moon/2.png")}
+          resizeMode="contain"
+          style={styles.weatherIcon}
+        />
+        <Text style={styles.degree}>{weatherInfo.degree}°</Text>
+        <View style={styles.bottom}>
+          <Text style={styles.degreeLimit}>
+            H: {weatherInfo.maxDegree}° L: {weatherInfo.minDegree}°
+          </Text>
+          <Text style={styles.city}>{weatherInfo.city}</Text>
+        </View>
+        <Text style={styles.weatherStatus}>{weatherInfo.weather_status}</Text>
       </View>
-      <Text style={styles.weatherStatus}>{weatherInfo.weather_status}</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 
