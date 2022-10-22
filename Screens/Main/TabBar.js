@@ -24,7 +24,7 @@ export default function TabBar() {
 function Front() {
   const navigation = useNavigation();
   const handlePlus = () => {
-    navigation.navigate("SearchCities");
+    navigation.navigate("SearchAdd");
   };
   return (
     <View style={styles.front}>

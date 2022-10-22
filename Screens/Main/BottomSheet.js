@@ -435,19 +435,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.38,
     lineHeight: 24,
   },
-
-  testContainer: {
-    flex: 1,
-    //paddingTop: StatusBar.currentHeight,
-    height: 40,
-  },
-  testScrollView: {
-    backgroundColor: "pink",
-    marginHorizontal: 20,
-  },
-  testText: {
-    fontSize: 42,
-  },
   widget: {
     marginLeft: 26,
     flexDirection: "row",
