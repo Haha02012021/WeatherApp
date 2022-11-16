@@ -39,18 +39,24 @@ function Front() {
 function Back() {
   const navigation = useNavigation();
 
+  const handleOpenSetting = () => {
+    navigation.navigate("Setting");
+  };
+
   const handleOpenBars = () => {
     navigation.navigate("FollowedCities");
   };
   return (
     <View style={styles.back}>
-      <Icon
-        name="map-pin"
-        type="font-awesome-5"
-        color="white"
-        style={styles.backIcon}
-        size={28}
-      />
+      <TouchableOpacity onPress={handleOpenSetting}>
+        <Icon
+          name="settings"
+          type="feather"
+          color="white"
+          style={styles.backIcon}
+          size={28}
+        />
+      </TouchableOpacity>
       <TouchableOpacity onPress={handleOpenBars}>
         <Icon
           name="bars"

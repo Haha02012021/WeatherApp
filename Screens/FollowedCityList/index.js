@@ -4,6 +4,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { TouchableOpacity } from "react-native";
 import { StyleSheet } from "react-native";
 import { View } from "react-native";
+import { HeaderBar } from "../../Components/HeaderBar";
 
 export default function FollowedCityList() {
   const navigation = useNavigation();
@@ -18,13 +19,8 @@ export default function FollowedCityList() {
       end={[Math.abs(Math.cos(168.44 / 180)), Math.abs(Math.sin(168.44 / 180))]}
       style={styles.container}
     >
-      <View style={styles.footer}>
-        <TouchableOpacity onPress={handleSetting}>
-          <Icon name="settings" type="feather" color="white" size={40} />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon name="bell" type="feather" color="white" size={40} />
-        </TouchableOpacity>
+      <View style={styles.headerBar}>
+        <HeaderBar title="Các thành phố theo dõi" />
       </View>
     </LinearGradient>
   );
@@ -33,6 +29,14 @@ export default function FollowedCityList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 28,
+  },
+  headerBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    width: "100%",
+    marginVertical: 20,
   },
   footer: {
     bottom: 0,

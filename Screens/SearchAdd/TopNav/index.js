@@ -3,37 +3,22 @@ import { Icon } from "@rneui/themed";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRef } from "react";
 import { Dimensions } from "react-native";
-import { Keyboard } from "react-native";
 import { Animated } from "react-native";
 import { TextInput } from "react-native";
-import { Text } from "react-native";
 import { StyleSheet } from "react-native";
-import { TouchableOpacity } from "react-native";
 import { View } from "react-native";
+import { HeaderBar } from "../../../Components/HeaderBar";
 import SearchInput from "../../../Components/Svg/SearchInput";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function TopNav() {
-  const navigation = useNavigation(null);
   const inputRef = useRef();
-
-  const handleBack = () => {
-    navigation.goBack();
-  };
 
   return (
     <Animated.View style={styles.topNav}>
       <View style={styles.leftAccessory}>
-        <TouchableOpacity onPress={handleBack}>
-          <Icon
-            name="chevron-small-left"
-            type="entypo"
-            color="rgba(235, 235, 245, 0.6)"
-            size={68}
-          />
-        </TouchableOpacity>
-        <Text style={{ fontSize: 28, color: "white" }}>Thời tiết</Text>
+        <HeaderBar />
       </View>
       <View style={styles.rightAccessory}>
         <Icon
