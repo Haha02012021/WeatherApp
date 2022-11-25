@@ -1,18 +1,49 @@
 import { useNavigation } from "@react-navigation/native";
 import { Icon } from "@rneui/themed";
 import { LinearGradient } from "expo-linear-gradient";
+import { useState } from "react";
 import { useRef } from "react";
 import { Dimensions } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { Animated } from "react-native";
 import { TextInput } from "react-native";
 import { StyleSheet } from "react-native";
 import { View } from "react-native";
 import { HeaderBar } from "../../../Components/HeaderBar";
 import SearchInput from "../../../Components/Svg/SearchInput";
+import CitiesOverlay from "./CitiesOverlay";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
+const followedCities = [
+  {
+    place: "Hà Nội",
+    temp: 19,
+    temp_unit: "C",
+    weather_status: "Trời quang",
+    max_temp: 24,
+    min_temp: 19,
+  },
+  {
+    place: "Thái Bình",
+    temp: 20,
+    temp_unit: "C",
+    weather_status: "Trời quang",
+    max_temp: 23,
+    min_temp: 20,
+  },
+  {
+    place: "Đà Lạt",
+    temp: 20,
+    temp_unit: "C",
+    weather_status: "Trời quang",
+    max_temp: 23,
+    min_temp: 20,
+  },
+];
+
 export default function TopNav() {
+  const [overlayVisible, setOverlayVisible] = useState(false);
   const inputRef = useRef();
 
   return (
@@ -21,12 +52,14 @@ export default function TopNav() {
         <HeaderBar />
       </View>
       <View style={styles.rightAccessory}>
-        <Icon
-          name="ellipsis-horizontal-circle-outline"
-          type="ionicon"
-          size={64}
-          color="white"
-        />
+        <TouchableOpacity onPress={() => setOverlayVisible(!overlayVisible)}>
+          <Icon
+            name="ellipsis-horizontal-circle-outline"
+            type="ionicon"
+            size={64}
+            color="white"
+          />
+        </TouchableOpacity>
       </View>
       <View style={{ marginLeft: 20, marginRight: 20 }}>
         <SearchInput width={SCREEN_WIDTH - 20 * 2}></SearchInput>
@@ -63,6 +96,10 @@ export default function TopNav() {
           />
         </View>
       </View>
+      <CitiesOverlay
+        isVisible={overlayVisible}
+        followedCities={followedCities}
+      />
     </Animated.View>
   );
 }

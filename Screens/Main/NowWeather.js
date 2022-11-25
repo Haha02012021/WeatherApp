@@ -8,15 +8,22 @@ const screenWidth = Dimensions.get("window").width;
 export default function NowWeather({ nowWeather }) {
   return (
     <View style={styles.container}>
-        <Text style={[styles.text, styles.place]}>{nowWeather.place}</Text>
-        <Text style={[styles.text, styles.nowTemp]}>{nowWeather.temp}°</Text>
-        <Text style={[styles.text, styles.weatherStatus]}>
-          {nowWeather.weather_status}
+      <Text style={[styles.text, styles.place]}>{nowWeather.city}</Text>
+      <Text style={[styles.text, styles.nowTemp]}>
+        {Math.round(nowWeather.current.temp)}°
+      </Text>
+      <Text style={[styles.text, styles.weatherStatus]}>
+        {nowWeather.current.weather[0].description.charAt(0).toUpperCase() +
+          nowWeather.current.weather[0].description.slice(1)}
+      </Text>
+      <View style={styles.tempLimit}>
+        <Text style={styles.text}>
+          H: {Math.round(nowWeather.daily[0].temp.max)}°
         </Text>
-        <View style={styles.tempLimit}>
-          <Text style={styles.text}>H: {nowWeather.max_temp}°</Text>
-          <Text style={styles.text}>L: {nowWeather.min_temp}°</Text>
-        </View>
+        <Text style={styles.text}>
+          L: {Math.round(nowWeather.daily[0].temp.min)}°
+        </Text>
+      </View>
     </View>
   );
 }

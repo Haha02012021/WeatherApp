@@ -10,32 +10,53 @@ import { HeaderBar } from "../../Components/HeaderBar";
 import { useState } from "react";
 
 const langs = ["vi", "en"];
-const units = ["C", "F"];
+const units = [
+  {
+    symbol: "C",
+    code: "metric",
+  },
+  {
+    symbol: "F",
+    code: "imperial",
+  },
+];
 
 export default function Setting({ navigation }) {
   const {
     isTheFirst,
     setTheFirst,
     appLang,
-    setAppLang,
     tempUnit,
+    followedCities,
+    setAppLang,
     setTempUnit,
   } = useContext(AppContext);
   const [currentLang, setCurrentLang] = useState(appLang);
   const [currentUnit, setCurrentUnit] = useState(tempUnit);
   useEffect(() => {
     const createAppKey = async () => {
-      await AsyncStorage.setItem("@weatherAppKey", "my weather app");
+      await AsyncStorage.setItem(
+        "@weatherApp",
+        JSON.stringify({
+          isTheFirst: false,
+          lang: "vi",
+          unit: "metric",
+          followedCities: ["ha noi", "thai binh"],
+        })
+      );
     };
 
     if (isTheFirst) {
       setTheFirst(false);
       createAppKey();
+    } else {
+      // console.log(appLang, tempUnit);
     }
   }, []);
 
   const handleRemoveKey = async () => {
     await AsyncStorage.removeItem("@weatherAppKey");
+    await AsyncStorage.removeItem("@weatherApp");
   };
 
   const handleChangeLang = (lang) => {
@@ -48,6 +69,26 @@ export default function Setting({ navigation }) {
     if (currentUnit != unit) {
       setCurrentUnit(unit);
     }
+  };
+
+  const handleSave = async () => {
+    setAppLang(currentLang);
+    setTempUnit(currentUnit);
+    await AsyncStorage.setItem(
+      "@weatherApp",
+      JSON.stringify({
+        isTheFirst: false,
+        lang: currentLang,
+        unit: currentUnit,
+        followedCities: followedCities,
+      })
+    );
+
+    navigation.navigate("Main");
+  };
+
+  const handleCancel = () => {
+    navigation.navigate("Main");
   };
 
   return (
@@ -90,11 +131,11 @@ export default function Setting({ navigation }) {
           {units.map((unit) => {
             return (
               <CheckBox
-                key={unit}
-                title={unit}
+                key={unit.code}
+                title={unit.symbol}
                 checkedIcon="dot-circle-o"
                 uncheckedIcon="circle-o"
-                checked={currentUnit === unit}
+                checked={currentUnit === unit.code}
                 checkedColor="purple"
                 containerStyle={{
                   backgroundColor: "transparent",
@@ -102,7 +143,7 @@ export default function Setting({ navigation }) {
                 textStyle={{
                   color: "white",
                 }}
-                onIconPress={() => handleChangeUnit(unit)}
+                onIconPress={() => handleChangeUnit(unit.code)}
                 // checked={check1}
                 // onPress={() => setCheck1(!check1)}
               />
@@ -114,6 +155,7 @@ export default function Setting({ navigation }) {
             type="outline"
             buttonStyle={[{ borderColor: "white" }, styles.button]}
             titleStyle={{ color: "white" }}
+            onPress={handleSave}
           >
             Lưu
           </Button>
@@ -123,9 +165,11 @@ export default function Setting({ navigation }) {
               styles.button,
             ]}
             titleStyle={{ color: "white" }}
+            onPress={handleCancel}
           >
             Bỏ qua
           </Button>
+          <Button onPress={handleRemoveKey}>RemoveKey</Button>
         </View>
       </View>
     </LinearGradient>

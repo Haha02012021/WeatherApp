@@ -5,16 +5,22 @@ import { AppContext } from "../../Providers/AppProvider";
 
 export default function Welcome({ navigation }) {
   const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
-  const { isTheFirst, setTheFirst } = useContext(AppContext);
+  const { isTheFirst, setTheFirst, setAppLang, setTempUnit, setFollowedCites } =
+    useContext(AppContext);
 
   useEffect(() => {
-    const getAppKey = async () => {
+    const getAppInfo = async () => {
       try {
-        const weatherAppKey = await AsyncStorage.getItem("@weatherAppKey");
+        const weatherAppInfoString = await AsyncStorage.getItem("@weatherApp");
+        const weatherAppInfo = JSON.parse(weatherAppInfoString);
+        console.log("weatherAppInfo: ", weatherAppInfo);
 
-        if (weatherAppKey) {
+        if (weatherAppInfo) {
           setTheFirst(false);
-
+          const { lang, unit, followedCities } = weatherAppInfo;
+          setAppLang(lang);
+          setTempUnit(unit);
+          setFollowedCites(followedCities);
           setTimeout(() => {
             navigation.navigate("Main");
           }, 1100);
@@ -29,7 +35,7 @@ export default function Welcome({ navigation }) {
       }
     };
 
-    getAppKey();
+    getAppInfo();
   }, []);
 
   useEffect(() => {

@@ -6,7 +6,8 @@ export const AppContext = createContext();
 export default function AppProvider({ children }) {
   const [isTheFirst, setTheFirst] = useState(true);
   const [appLang, setAppLang] = useState("vi");
-  const [tempUnit, setTempUnit] = useState("C");
+  const [tempUnit, setTempUnit] = useState("metric");
+  const [followedCities, setFollowedCites] = useState(["ha noi", "thai binh"]);
 
   useEffect(() => {}, []);
 
@@ -19,6 +20,8 @@ export default function AppProvider({ children }) {
         setAppLang,
         tempUnit,
         setTempUnit,
+        followedCities,
+        setFollowedCites,
       }}
     >
       {children}

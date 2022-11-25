@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { View } from "react-native";
 import { Dimensions } from "react-native";
@@ -19,54 +19,19 @@ import { useCallback, useEffect } from "react";
 import Card from "../../Components/Card";
 import TabBar from "./TabBar";
 import { Image } from "react-native";
-
-const hourlys = [
-  {
-    hour: "12 AM",
-    degree: "19",
-    degree_unit: "C",
-  },
-  {
-    hour: "1 AM",
-    degree: "19",
-    degree_unit: "C",
-  },
-  {
-    hour: "1 AM",
-    degree: "19",
-    degree_unit: "C",
-  },
-  {
-    hour: "1 AM",
-    degree: "19",
-    degree_unit: "C",
-  },
-  {
-    hour: "1 AM",
-    degree: "19",
-    degree_unit: "C",
-  },
-  {
-    hour: "1 AM",
-    degree: "19",
-    degree_unit: "C",
-  },
-  {
-    hour: "1 AM",
-    degree: "19",
-    degree_unit: "C",
-  },
-  {
-    hour: "1 AM",
-    degree: "19",
-    degree_unit: "C",
-  },
-];
+import { useContext } from "react";
+import { AppContext } from "../../Providers/AppProvider";
+import { useState } from "react";
+import Accordion from "react-native-collapsible/Accordion";
+import WeeklyForcast from "../../Components/WeeklyForcast";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const MAX_TRANSLATE_Y = -SCREEN_HEIGHT / 1.3;
 
 export default function BottomSheet({ nowWeather }) {
+  const { tempUnit } = useContext(AppContext);
+  const [isHourlyForecast, setHourlyForeCast] = useState(true);
+  const [selectedHourly, setSelectedHourly] = useState(0);
   const translateY = useSharedValue(0);
   const context = useSharedValue({ y: 0 });
 
@@ -124,7 +89,7 @@ export default function BottomSheet({ nowWeather }) {
   const rTabBarStyle = useAnimatedStyle(() => {
     const opacity = interpolate(
       translateY.value,
-      [MAX_TRANSLATE_Y + SCREEN_HEIGHT, MAX_TRANSLATE_Y],
+      [MAX_TRANSLATE_Y + SCREEN_HEIGHT / 2, MAX_TRANSLATE_Y],
       [1, 0],
       Extrapolate.CLAMP
     );
@@ -134,16 +99,30 @@ export default function BottomSheet({ nowWeather }) {
     };
   });
 
+  const getDateDetail = (number) => {
+    const date = new Date(number * 1000);
+
+    return {
+      date: date.getDate(),
+      hour: date.getHours(),
+      minute: date.getMinutes(),
+    };
+  };
+
+  const handleHourly = (index) => {
+    setSelectedHourly(index);
+  };
+
   return (
     <GestureDetector gesture={gesture}>
       <>
         <Animated.View style={[styles.container, rContainerStyle]}>
           <Animated.View style={[styles.nowWeather]}>
             <Text style={{ fontSize: 34, color: "rgba(255, 255, 255, 0.7)" }}>
-              {nowWeather.place}
+              {nowWeather.city}
             </Text>
             <Text style={{ fontSize: 20, color: "rgba(255, 255, 255, 0.4)" }}>
-              {nowWeather.temp}|{nowWeather.weather_status}
+              {nowWeather.temp}|{nowWeather.current.weather[0].description}
             </Text>
           </Animated.View>
           <View style={styles.header}>
@@ -169,121 +148,183 @@ export default function BottomSheet({ nowWeather }) {
               style={[styles.bottom]}
             ></LinearGradient>
             <View style={styles.headerActions}>
-              <Text style={styles.actionText}>Dự báo trong ngày</Text>
-              <Text style={styles.actionText}>Dự báo trong tuần</Text>
+              <TouchableOpacity onPress={() => setHourlyForeCast(true)}>
+                <Text style={styles.actionText}>Dự báo trong ngày</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => setHourlyForeCast(false)}>
+                <Text style={styles.actionText}>Dự báo trong tuần</Text>
+              </TouchableOpacity>
             </View>
           </View>
           <View style={styles.light}></View>
-          <View style={[styles.content]}>
-            <View style={styles.hourlyList}>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-              >
-                {hourlys.map((hourly, index) => {
-                  return (
-                    <View key={index} style={styles.hourly}>
-                      <Text style={[styles.hourlyText, styles.hour]}>
-                        {hourly.hour}
+          {isHourlyForecast ? (
+            <View style={[styles.content]}>
+              <View style={styles.hourlyList}>
+                <ScrollView
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                >
+                  {nowWeather.hourly.map((hourly, index) => {
+                    const now = new Date();
+                    const date = getDateDetail(hourly.dt);
+                    if (now.getDate() === date.date) {
+                      return (
+                        <TouchableOpacity
+                          key={index}
+                          onPress={() => handleHourly(index)}
+                        >
+                          <View
+                            style={[
+                              styles.hourly,
+                              selectedHourly === index && styles.activeHourly,
+                            ]}
+                          >
+                            <Text style={[styles.hourlyText, styles.hour]}>
+                              {date.hour}:00
+                            </Text>
+                            <View>
+                              <Image
+                                source={require("../../assets/weather_icons/moon/1.png")}
+                                resizeMode="contain"
+                                style={{
+                                  height: 32,
+                                }}
+                              />
+                            </View>
+                            <Text style={[styles.hourlyText, styles.degree]}>
+                              {Math.round(hourly.temp)}°
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      );
+                    }
+                  })}
+                </ScrollView>
+              </View>
+              <ScrollView>
+                <Animated.View style={[styles.widget, rWidetStyle]}>
+                  <Card
+                    iconName={"sun"}
+                    cardName="Mức độ tia UV"
+                    value={
+                      selectedHourly === 0
+                        ? nowWeather.current.uvi
+                        : nowWeather.hourly[selectedHourly].uvi
+                    }
+                    note="Vừa phải"
+                  />
+                  <Card
+                    iconName={"sunrise"}
+                    cardName="Mặt trời mọc"
+                    value={
+                      getDateDetail(nowWeather.current.sunrise).hour +
+                      ":" +
+                      getDateDetail(nowWeather.current.sunrise).minute
+                    }
+                    smallNote={
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 12,
+                          opacity: 0.7,
+                        }}
+                      >
+                        Mặt trời lặn:{" "}
+                        {getDateDetail(nowWeather.current.sunset).hour}:
+                        {getDateDetail(nowWeather.current.sunset).minute}
                       </Text>
-                      <View>
-                        <Image
-                          source={require("../../assets/weather_icons/moon/1.png")}
-                          resizeMode="contain"
-                          style={{
-                            height: 32,
-                          }}
-                        />
-                        {/* <Text style={styles.hourlyText}></Text> */}
-                      </View>
-                      <Text style={[styles.hourlyText, styles.degree]}>
-                        {hourly.degree}°
+                    }
+                  />
+                  <Card
+                    iconName={"wind"}
+                    cardName="Gió"
+                    value={
+                      (selectedHourly === 0
+                        ? nowWeather.current.wind_speed
+                        : nowWeather.hourly[selectedHourly].wind_speed) +
+                      (tempUnit === "metric" ? " m/s" : " m/h")
+                    }
+                  />
+                  <Card
+                    iconName={"drop"}
+                    iconType={"entypo"}
+                    cardName="Lượng mưa"
+                    value={
+                      nowWeather.hourly[selectedHourly].rain
+                        ? nowWeather.hourly[selectedHourly].rain["1h"]
+                        : 0 + " mm"
+                    }
+                    note="vào giờ trước"
+                    smallNote={
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 12,
+                          opacity: 0.7,
+                        }}
+                      >
+                        Dự đoán{" "}
+                        {nowWeather.hourly[selectedHourly + 1].rain
+                          ? nowWeather.hourly[selectedHourly + 1].rain["1h"]
+                          : 0}{" "}
+                        mm trong 1 giờ tiếp theo.
                       </Text>
-                    </View>
-                  );
-                })}
+                    }
+                  />
+                  <Card
+                    iconName={"thermometer-1"}
+                    iconType={"font-awesome"}
+                    cardName="Cảm giác như"
+                    value={
+                      (selectedHourly === 0
+                        ? Math.round(nowWeather.current.feels_like)
+                        : Math.round(
+                            nowWeather.hourly[selectedHourly].feels_like
+                          )) + "°"
+                    }
+                    smallNote={
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 12,
+                          opacity: 0.7,
+                        }}
+                      >
+                        Giống nhiệt độ thực tế.
+                      </Text>
+                    }
+                  />
+                  <Card
+                    iconName={"water"}
+                    iconType={"font-awesome-5"}
+                    cardName="Độ ẩm"
+                    value={
+                      (selectedHourly === 0
+                        ? nowWeather.current.humidity
+                        : nowWeather.hourly[selectedHourly].humidity) + "%"
+                    }
+                    smallNote={
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 12,
+                          opacity: 0.7,
+                        }}
+                      >
+                        Điểm sương là{" "}
+                        {selectedHourly === 0
+                          ? nowWeather.current.dew_point
+                          : nowWeather.hourly[selectedHourly].dew_point}
+                        .
+                      </Text>
+                    }
+                  />
+                </Animated.View>
               </ScrollView>
             </View>
-            <ScrollView>
-              <Animated.View style={[styles.widget, rWidetStyle]}>
-                <Card
-                  iconName={"sun"}
-                  cardName="Mức độ tia UV"
-                  value={4}
-                  note="Vừa phải"
-                />
-                <Card
-                  iconName={"sunrise"}
-                  cardName="Mặt trời mọc"
-                  value={"5:00 AM"}
-                  smallNote={
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 12,
-                        opacity: 0.7,
-                      }}
-                    >
-                      Mặt trời lặn: 7:00 PM
-                    </Text>
-                  }
-                />
-                <Card iconName={"wind"} cardName="Gió" value={"9.7 km/h"} />
-                <Card
-                  iconName={"drop"}
-                  iconType={"entypo"}
-                  cardName="Lượng mưa"
-                  value={"1.8 mm"}
-                  note="vào giờ trước"
-                  smallNote={
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 12,
-                        opacity: 0.7,
-                      }}
-                    >
-                      Dự đoán 1.2 mm trong 24 giờ tiếp theo.
-                    </Text>
-                  }
-                />
-                <Card
-                  iconName={"thermometer-1"}
-                  iconType={"font-awesome"}
-                  cardName="Cảm giác như"
-                  value="19°"
-                  smallNote={
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 12,
-                        opacity: 0.7,
-                      }}
-                    >
-                      Giống nhiệt độ thực tế.
-                    </Text>
-                  }
-                />
-                <Card
-                  iconName={"water"}
-                  iconType={"font-awesome-5"}
-                  cardName="Độ ẩm"
-                  value={"90%"}
-                  smallNote={
-                    <Text
-                      style={{
-                        color: "white",
-                        fontSize: 12,
-                        opacity: 0.7,
-                      }}
-                    >
-                      Điểm sương bây giờ là 17.
-                    </Text>
-                  }
-                />
-              </Animated.View>
-            </ScrollView>
-          </View>
+          ) : (
+            <WeeklyForcast daily={nowWeather.daily} />
+          )}
         </Animated.View>
         <Animated.View style={[styles.tabBar, rTabBarStyle]}>
           <TabBar />
@@ -409,7 +450,7 @@ const styles = StyleSheet.create({
   hourly: {
     height: 146,
     width: 60,
-    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    backgroundColor: "rgba(72, 49, 157, 0.1)",
     borderWidth: 2,
     borderRadius: 30,
     borderColor: "rgba(0, 0, 0, 0.2)",
@@ -419,6 +460,39 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginLeft: 6,
     marginRight: 6,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.34,
+    shadowRadius: 6.27,
+
+    elevation: 10,
+    marginBottom: 10,
+  },
+  activeHourly: {
+    height: 146,
+    width: 60,
+    backgroundColor: "rgba(72, 49, 157, 0.5)",
+    borderWidth: 1,
+    borderRadius: 30,
+    borderColor: "rgba(255, 255, 255, 0.5)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-evenly",
+    alignItems: "center",
+    marginLeft: 6,
+    marginRight: 6,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.34,
+    shadowRadius: 6.27,
+
+    elevation: 10,
   },
   hourlyText: {
     color: "white",

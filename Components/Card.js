@@ -25,10 +25,10 @@ export default function Card({
         />
         <Text style={styles.cardName}>{cardName}</Text>
       </View>
-      <View>
+      <View style={styles.bottom}>
         <Text style={styles.value}>{value}</Text>
         <Text style={styles.note}>{note}</Text>
-        <View>{smallNote}</View>
+        <View style={styles.smallNote}>{smallNote}</View>
       </View>
     </View>
   );
@@ -53,6 +53,10 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+    height: "20%",
+  },
+  bottom: {
+    height: "80%",
   },
   cardName: {
     color: "rgba(235, 235, 245, 0.6)",
@@ -68,5 +72,8 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     opacity: 0.7,
+  },
+  smallNote: {
+    bottom: 0,
   },
 });

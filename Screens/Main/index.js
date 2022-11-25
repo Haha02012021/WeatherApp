@@ -11,38 +11,42 @@ import { Dimensions } from "react-native";
 import { Icon } from "@rneui/themed";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native";
+import { useContext } from "react";
+import { AppContext } from "../../Providers/AppProvider";
 
-const nowWeathers = [
-  {
-    place: "Hà Nội",
-    temp: 19,
-    temp_unit: "C",
-    weather_status: "Trời quang",
-    max_temp: 24,
-    min_temp: 19,
-  },
-  {
-    place: "Thái Bình",
-    temp: 20,
-    temp_unit: "C",
-    weather_status: "Trời quang",
-    max_temp: 23,
-    min_temp: 20,
-  },
-  {
-    place: "Đà Lạt",
-    temp: 20,
-    temp_unit: "C",
-    weather_status: "Trời quang",
-    max_temp: 23,
-    min_temp: 20,
-  },
-];
+// const nowWeathers = [
+//   {
+//     place: "Hà Nội",
+//     temp: 19,
+//     temp_unit: "C",
+//     weather_status: "Trời quang",
+//     max_temp: 24,
+//     min_temp: 19,
+//   },
+//   {
+//     place: "Thái Bình",
+//     temp: 20,
+//     temp_unit: "C",
+//     weather_status: "Trời quang",
+//     max_temp: 23,
+//     min_temp: 20,
+//   },
+//   {
+//     place: "Đà Lạt",
+//     temp: 20,
+//     temp_unit: "C",
+//     weather_status: "Trời quang",
+//     max_temp: 23,
+//     min_temp: 20,
+//   },
+// ];
 
 const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 
 export default function Main({ navigation }) {
+  const { appLang, tempUnit, followedCities } = useContext(AppContext);
   const [touchX, setTouchX] = useState();
+  const [followedWeathers, setFollowedWeathers] = useState([]);
   const [weatherIndex, setWeatherIndex] = useState(0);
   useEffect(() => {
     navigation.addListener("beforeRemove", (e) => {
@@ -59,11 +63,41 @@ export default function Main({ navigation }) {
       }
     );
 
+    if (followedCities.length >= followedWeathers.length)
+      setFollowedWeathers([]);
+    followedCities.forEach((followedCity) => {
+      getWeather(followedCity);
+    });
+
     return () => {
       navigation.removeListener("beforeRemove");
       backHandler.remove();
     };
-  }, [navigation]);
+  }, [navigation, tempUnit, appLang]);
+
+  const getWeather = async (cityName) => {
+    const city = await fetch(
+      `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=&appid=acbae9c57a24663635f3918fd4e8f0c7`
+    )
+      .then((response) => response.json())
+      .then((data) => data);
+
+    const weather = await fetch(
+      `https://api.openweathermap.org/data/2.5/onecall?lat=${city[0].lat}&lon=${city[0].lon}&exclude=&appid=acbae9c57a24663635f3918fd4e8f0c7&lang=${appLang}&units=${tempUnit}`
+    )
+      .then((response) => response.json())
+      .then((data) => data);
+    // console.log(weather);
+    setFollowedWeathers((prev) => [
+      ...prev,
+      {
+        city: city[0].local_names[appLang],
+        current: weather.current,
+        hourly: weather.hourly,
+        daily: weather.daily,
+      },
+    ]);
+  };
 
   const handleSwipeOther = (index) => {
     setWeatherIndex(index);
@@ -76,7 +110,7 @@ export default function Main({ navigation }) {
         onTouchStart={(e) => setTouchX(e.nativeEvent.pageX)}
         onTouchEnd={(e) => {
           if (touchX - e.nativeEvent.pageX > 20) {
-            if (weatherIndex < nowWeathers.length - 1) {
+            if (weatherIndex < followedWeathers.length - 1) {
               setWeatherIndex(weatherIndex + 1);
             } else {
               setWeatherIndex(0);
@@ -87,7 +121,7 @@ export default function Main({ navigation }) {
             if (weatherIndex > 0) {
               setWeatherIndex(weatherIndex - 1);
             } else {
-              setWeatherIndex(nowWeathers.length - 1);
+              setWeatherIndex(followedWeathers.length - 1);
             }
           }
         }}
@@ -105,24 +139,37 @@ export default function Main({ navigation }) {
               alignItems: "center",
             }}
           >
-            {nowWeathers.map((nowWeather, index) => {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => handleSwipeOther(index)}
-                  style={{ padding: 8 }}
-                >
-                  {index === weatherIndex ? (
-                    <Icon name="dot-single" type="entypo" color="white" />
-                  ) : (
-                    <Icon name="circle" type="entypo" color="white" size={6} />
-                  )}
-                </TouchableOpacity>
-              );
-            })}
+            {followedWeathers.length > 0 &&
+              followedWeathers.map((nowWeather, index) => {
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => handleSwipeOther(index)}
+                    style={{ padding: 8 }}
+                  >
+                    {index === weatherIndex ? (
+                      <Icon
+                        name="circle"
+                        type="font-awesome"
+                        color="white"
+                        size={6}
+                      />
+                    ) : (
+                      <Icon
+                        name="circle-thin"
+                        type="font-awesome"
+                        color="white"
+                        size={6}
+                      />
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
           </View>
           <View style={styles.content}>
-            <NowWeather nowWeather={nowWeathers[weatherIndex]} />
+            {followedWeathers.length > 0 && (
+              <NowWeather nowWeather={followedWeathers[weatherIndex]} />
+            )}
             <Image
               source={require("../../assets/House.png")}
               resizeMode="cover"
@@ -131,7 +178,9 @@ export default function Main({ navigation }) {
           </View>
         </ImageBackground>
       </View>
-      <BottomSheet nowWeather={nowWeathers[weatherIndex]} />
+      {followedWeathers.length > 0 && (
+        <BottomSheet nowWeather={followedWeathers[weatherIndex]} />
+      )}
     </GestureHandlerRootView>
   );
 }

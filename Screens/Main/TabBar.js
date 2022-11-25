@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     height: 100,
   },
   curveShape: {
-    left: -(700 - SCREEN_WIDTH) / 2,
+    left: -(549 - SCREEN_WIDTH) / 2,
     bottom: 0,
   },
   front: {
