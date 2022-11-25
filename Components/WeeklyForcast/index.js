@@ -24,8 +24,6 @@ export default function WeeklyForcast({ daily }) {
     }
   };
 
-  console.log(selectedDate);
-
   const getDay = (number) => {
     const date = new Date(number * 1000);
 
