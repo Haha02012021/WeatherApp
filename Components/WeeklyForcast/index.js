@@ -13,14 +13,18 @@ export default function WeeklyForcast({ daily }) {
   const { tempUnit } = useContext(AppContext);
   const [selectedDate, setSelectedDate] = useState([]);
   const hanleChangeSection = (indexes) => {
-    setSelectedDate(
-      indexes.length > 0
-        ? indexes[0] === selectedDate[0]
-          ? null
-          : indexes
-        : [0]
-    );
+    if (selectedDate.length === 1) {
+      if (selectedDate[0] === indexes[0]) {
+        setSelectedDate([]);
+      } else {
+        setSelectedDate(indexes);
+      }
+    } else {
+      setSelectedDate(indexes);
+    }
   };
+
+  console.log(selectedDate);
 
   const getDay = (number) => {
     const date = new Date(number * 1000);
@@ -218,6 +222,8 @@ export default function WeeklyForcast({ daily }) {
         renderHeader={renderHeader}
         renderContent={renderContent}
         onChange={hanleChangeSection}
+        underlayColor="rgba(0, 0, 0, 0.2)"
+        duration={600}
       />
     </ScrollView>
   );
