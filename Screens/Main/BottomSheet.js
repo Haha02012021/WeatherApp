@@ -149,10 +149,10 @@ export default function BottomSheet({ nowWeather }) {
             ></LinearGradient>
             <View style={styles.headerActions}>
               <TouchableOpacity onPress={() => setHourlyForeCast(true)}>
-                <Text style={styles.actionText}>Dự báo trong ngày</Text>
+                <Text style={styles.actionText}>Dự báo theo giờ</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => setHourlyForeCast(false)}>
-                <Text style={styles.actionText}>Dự báo trong tuần</Text>
+                <Text style={styles.actionText}>Dự báo theo ngày</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -165,39 +165,35 @@ export default function BottomSheet({ nowWeather }) {
                   showsHorizontalScrollIndicator={false}
                 >
                   {nowWeather.hourly.map((hourly, index) => {
-                    const now = new Date();
-                    const date = getDateDetail(hourly.dt);
-                    if (now.getDate() === date.date) {
-                      return (
-                        <TouchableOpacity
-                          key={index}
-                          onPress={() => handleHourly(index)}
+                    return (
+                      <TouchableOpacity
+                        key={index}
+                        onPress={() => handleHourly(index)}
+                      >
+                        <View
+                          style={[
+                            styles.hourly,
+                            selectedHourly === index && styles.activeHourly,
+                          ]}
                         >
-                          <View
-                            style={[
-                              styles.hourly,
-                              selectedHourly === index && styles.activeHourly,
-                            ]}
-                          >
-                            <Text style={[styles.hourlyText, styles.hour]}>
-                              {date.hour}:00
-                            </Text>
-                            <View>
-                              <Image
-                                source={require("../../assets/weather_icons/moon/1.png")}
-                                resizeMode="contain"
-                                style={{
-                                  height: 32,
-                                }}
-                              />
-                            </View>
-                            <Text style={[styles.hourlyText, styles.degree]}>
-                              {Math.round(hourly.temp)}°
-                            </Text>
+                          <Text style={[styles.hourlyText, styles.hour]}>
+                            {getDateDetail(hourly.dt).hour}:00
+                          </Text>
+                          <View>
+                            <Image
+                              source={require("../../assets/weather_icons/moon/1.png")}
+                              resizeMode="contain"
+                              style={{
+                                height: 32,
+                              }}
+                            />
                           </View>
-                        </TouchableOpacity>
-                      );
-                    }
+                          <Text style={[styles.hourlyText, styles.degree]}>
+                            {Math.round(hourly.temp)}°
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    );
                   })}
                 </ScrollView>
               </View>

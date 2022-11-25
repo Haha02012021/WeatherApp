@@ -11,7 +11,7 @@ export default function CitiesOverlay({ isVisible, followedCities }) {
     <Overlay isVisible={isVisible}>
       <View style={styles.overlay}>
         {followedCities.map((followedCity, index) => {
-          return <ListItem />;
+          return <ListItem key={index} />;
         })}
       </View>
     </Overlay>
