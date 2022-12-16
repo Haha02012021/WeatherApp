@@ -1,11 +1,12 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Welcome from "./Screens/Welcome";
-import Setting from "./Screens/Setting";
-import Main from "./Screens/Main";
-import SearchAdd from "./Screens/SearchAdd";
-import FollowedCityList from "./Screens/FollowedCityList";
-import AppProvider from "./Providers/AppProvider";
+import Welcome from "./src/Screens/Welcome";
+import Setting from "./src/Screens/Setting";
+import Main from "./src/Screens/Main";
+import SearchAdd from "./src/Screens/SearchAdd";
+import FollowedCityList from "./src/Screens/FollowedCityList";
+import CityWeather from "./src/Screens/CityWeather";
+import AppProvider from "./src/Providers/AppProvider";
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,11 @@ export default function App() {
           <Stack.Screen
             name="FollowedCities"
             component={FollowedCityList}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="CityWeather"
+            component={CityWeather}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
