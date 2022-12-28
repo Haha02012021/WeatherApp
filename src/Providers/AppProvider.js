@@ -8,6 +8,7 @@ export default function AppProvider({ children }) {
   const [appLang, setAppLang] = useState("vi");
   const [tempUnit, setTempUnit] = useState("metric");
   const [followedCities, setFollowedCities] = useState(["ha noi", "thai binh"]);
+  const [darkTheme, setDarkTheme] = useState(0);
 
   useEffect(() => {}, []);
 
@@ -22,6 +23,8 @@ export default function AppProvider({ children }) {
         setTempUnit,
         followedCities,
         setFollowedCities,
+        darkTheme,
+        setDarkTheme,
       }}
     >
       {children}

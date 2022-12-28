@@ -8,7 +8,7 @@ import { AppContext } from "../../Providers/AppProvider";
 import { View } from "react-native";
 import { HeaderBar } from "../../Components/HeaderBar";
 import { useState } from "react";
-import { langs } from "../../constant";
+import { colors, langs } from "../../constant";
 
 const langOptions = ["vi", "en"];
 const units = [
@@ -29,6 +29,7 @@ export default function Setting({ navigation }) {
     appLang,
     tempUnit,
     followedCities,
+    darkTheme,
     setAppLang,
     setTempUnit,
   } = useContext(AppContext);
@@ -51,7 +52,6 @@ export default function Setting({ navigation }) {
       setTheFirst(false);
       createAppKey();
     } else {
-      // console.log(appLang, tempUnit);
     }
   }, []);
 
@@ -94,7 +94,7 @@ export default function Setting({ navigation }) {
 
   return (
     <LinearGradient
-      colors={["#2E335A", "#1C1B33"]}
+      colors={colors[darkTheme].gradient}
       start={[0, 0]}
       end={[Math.abs(Math.cos(168.44 / 180)), Math.abs(Math.sin(168.44 / 180))]}
       style={styles.container}

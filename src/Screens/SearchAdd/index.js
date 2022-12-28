@@ -1,14 +1,18 @@
 import { Icon } from "@rneui/themed";
 import { LinearGradient } from "expo-linear-gradient";
+import { useContext } from "react";
 import { useState } from "react";
 import { View } from "react-native";
 import { Text } from "react-native";
 import { TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native";
 import { StyleSheet } from "react-native";
+import { colors } from "../../constant";
+import { AppContext } from "../../Providers/AppProvider";
 import TopNav from "./TopNav";
 
 export default function SearchAdd({ navigation }) {
+  const { darkTheme } = useContext(AppContext);
   const [cities, setCities] = useState([]);
 
   const handleChooseCity = (city) => {
@@ -19,7 +23,7 @@ export default function SearchAdd({ navigation }) {
 
   return (
     <LinearGradient
-      colors={["#2E335A", "#1C1B33"]}
+      colors={colors[darkTheme].gradient}
       start={[0, 0]}
       end={[Math.abs(Math.cos(168.44 / 180)), Math.abs(Math.sin(168.44 / 180))]}
       style={styles.container}

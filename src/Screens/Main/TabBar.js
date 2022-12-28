@@ -1,19 +1,24 @@
 import { Icon } from "@rneui/themed";
-import { Dimensions } from "react-native";
+import { Dimensions, Image } from "react-native";
 import { StyleSheet, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import CurveShape from "../../Components/Svg/CurveShape";
 import Subtract from "../../Components/Svg/Subtract";
 import PlusButton from "../../Components/Svg/PlusButton";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { curveShape } from "../../assets/curve_shapes";
+import { useContext } from "react";
+import { AppContext } from "../../Providers/AppProvider";
+import { subtract } from "../../assets/subtract";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function TabBar() {
+  const { darkTheme } = useContext(AppContext);
   return (
     <View style={styles.container}>
       <View style={styles.curveShape}>
-        <CurveShape />
+        {/* <CurveShape /> */}
+        <Image source={curveShape[darkTheme]} />
       </View>
       <Front />
       <Back />
@@ -22,13 +27,21 @@ export default function TabBar() {
 }
 
 function Front() {
+  const { darkTheme } = useContext(AppContext);
   const navigation = useNavigation();
   const handlePlus = () => {
     navigation.navigate("SearchAdd");
   };
   return (
     <View style={styles.front}>
-      <Subtract style={styles.subtract} />
+      {darkTheme === 0 ? (
+        <Subtract style={styles.subtract} />
+      ) : (
+        <Image
+          source={require("../../assets/subtract/0.png")}
+          style={[styles.subtract, { bottom: -8 }]}
+        />
+      )}
       <TouchableOpacity style={styles.toucher} onPress={handlePlus}>
         <PlusButton />
       </TouchableOpacity>
@@ -77,7 +90,7 @@ const styles = StyleSheet.create({
   },
   curveShape: {
     left: -(549 - SCREEN_WIDTH) / 2,
-    bottom: 0,
+    bottom: -10,
   },
   front: {
     position: "absolute",

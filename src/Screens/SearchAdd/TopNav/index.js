@@ -13,6 +13,7 @@ import { HeaderBar } from "../../../Components/HeaderBar";
 import SearchInput from "../../../Components/Svg/SearchInput";
 import { langs } from "../../../constant";
 import { AppContext } from "../../../Providers/AppProvider";
+import { searchCity } from "../../../utils/methods";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -23,23 +24,25 @@ export default function TopNav({ setCities }) {
   useEffect(() => {}, []);
 
   const getCitiesByKeyWord = async (keyword) => {
-    const searchedCities = await axios
-      .request({
-        method: "GET",
-        url: "https://city-by-api-ninjas.p.rapidapi.com/v1/city",
-        params: { name: keyword, limit: "20" },
-        headers: {
-          "X-RapidAPI-Key":
-            "f6475b0623mshb08149ae628c8a1p1de51bjsnb8bf8a56444e",
-          "X-RapidAPI-Host": "city-by-api-ninjas.p.rapidapi.com",
-        },
-      })
-      .then(function (response) {
-        return response.data;
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
+    // const searchedCities = await axios
+    //   .request({
+    //     method: "GET",
+    //     url: "https://city-by-api-ninjas.p.rapidapi.com/v1/city",
+    //     params: { name: keyword, limit: "20" },
+    //     headers: {
+    //       "X-RapidAPI-Key":
+    //         "f6475b0623mshb08149ae628c8a1p1de51bjsnb8bf8a56444e",
+    //       "X-RapidAPI-Host": "city-by-api-ninjas.p.rapidapi.com",
+    //     },
+    //   })
+    //   .then(function (response) {
+    //     return response.data;
+    //   })
+    //   .catch(function (error) {
+    //     console.error(error);
+    //   });
+
+    const searchedCities = searchCity(keyword);
 
     setCities(searchedCities?.map((city) => city.name));
   };

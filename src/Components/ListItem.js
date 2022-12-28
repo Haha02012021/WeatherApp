@@ -4,7 +4,6 @@ import { RectButton, Swipeable } from "react-native-gesture-handler";
 
 export default function ListItem() {
   const renderRightActions = (progress, dragX) => {
-    console.log(dragX);
     const trans = dragX.interpolate({
       inputRange: [0, 0],
       outputRange: [0, -80],

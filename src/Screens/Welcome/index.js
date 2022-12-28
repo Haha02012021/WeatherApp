@@ -6,20 +6,24 @@ import { AppContext } from "../../Providers/AppProvider";
 export default function Welcome({ navigation }) {
   const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
   const {
-    isTheFirst,
     setTheFirst,
     setAppLang,
     setTempUnit,
     setFollowedCities,
+    setDarkTheme,
   } = useContext(AppContext);
 
   useEffect(() => {
+    const now = new Date().getHours();
+    if (now > 6 && now < 18) {
+      setDarkTheme(1);
+    } else {
+      setDarkTheme(0);
+    }
     const getAppInfo = async () => {
       try {
         const weatherAppInfoString = await AsyncStorage.getItem("@weatherApp");
         const weatherAppInfo = JSON.parse(weatherAppInfoString);
-        console.log("weatherAppInfo: ", weatherAppInfo);
-
         if (weatherAppInfo) {
           setTheFirst(false);
           const { lang, unit, followedCities } = weatherAppInfo;

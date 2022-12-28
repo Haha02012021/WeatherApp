@@ -1,5 +1,4 @@
 export const getWeather = async (cityName, appLang, tempUnit, setWeather) => {
-  console.log(cityName);
   const city = await fetch(
     `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=&appid=acbae9c57a24663635f3918fd4e8f0c7`
   )

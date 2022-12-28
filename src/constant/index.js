@@ -41,6 +41,12 @@ export const langs = {
     save: "Save",
     cancel: "Cancel",
     nextHour: "in the next 1 hour",
+    good: "Good",
+    medium: "Medium",
+    least: "Least",
+    bad: "Bad",
+    damnable: "Damnable",
+    dangerous: "Dangerous",
   },
   vi: {
     greeting: "Chào",
@@ -84,5 +90,57 @@ export const langs = {
     save: "Lưu",
     cancel: "Bỏ qua",
     nextHour: "trong 1 giờ tiếp theo",
+    good: "Tốt",
+    medium: "Trung bình",
+    least: "Kém",
+    bad: "Xấu",
+    damnable: "Rất xấu",
+    dangerous: "Nguy hại",
   },
 };
+
+export const colors = {
+  0: {
+    gradient: ["#3A3A6A", "#25244C"],
+    color: "rgba(72, 49, 157, 0.5)",
+  },
+  1: {
+    gradient: ["#2F50A6", "#312AC3"],
+    color: "rgba(53, 109, 255, 0.5)",
+  },
+};
+
+export const aqi = {
+  good: {
+    color: "#00E600",
+    maxIndex: 50,
+    quality: "good",
+  },
+  medium: {
+    color: "#FFFA00",
+    maxIndex: 100,
+    quality: "medium",
+  },
+  least: {
+    color: "#FF7D00",
+    maxIndex: 150,
+    quality: "least",
+  },
+  bad: {
+    color: "#FF2500",
+    maxIndex: 200,
+    quality: "bad",
+  },
+  damnable: {
+    color: "#9B174C",
+    maxIndex: 300,
+    quality: "damnable",
+  },
+  dangerous: {
+    color: "#800E1F",
+    maxIndex: 500,
+    quality: "dangerous",
+  },
+};
+
+export const cities = require("./tinh_tp.json");

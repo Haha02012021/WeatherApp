@@ -2,8 +2,6 @@ import { useEffect, useRef } from "react";
 import { BackHandler, Image, ImageBackground, StyleSheet } from "react-native";
 import BottomSheet from "./BottomSheet";
 import NowWeather from "./NowWeather";
-// import BottomSheet from "reanimated-bottom-sheet";
-// import { Animated } from "react-native";
 import { View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Dimensions } from "react-native";
@@ -12,16 +10,17 @@ import { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { useContext } from "react";
 import { AppContext } from "../../Providers/AppProvider";
-import { weatherBackgrounds } from "../../assets/weather_backgrounds";
 import { houses } from "../../assets/houses";
-import { langs } from "../../constant";
-const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
+import { getWeatherBg } from "../../utils/methods";
 
+const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
 export default function Main({ route, navigation }) {
   const { appLang, tempUnit, followedCities } = useContext(AppContext);
   const [touchX, setTouchX] = useState();
   const [followedWeathers, setFollowedWeathers] = useState([]);
   const [weatherIndex, setWeatherIndex] = useState(route.params?.index || 0);
+  const [defaultWeather, setDefaultWeather] = useState();
+
   useEffect(() => {
     navigation.addListener("beforeRemove", (e) => {
       e.preventDefault();
@@ -40,8 +39,8 @@ export default function Main({ route, navigation }) {
     if (followedWeathers.length >= followedCities.length)
       setFollowedWeathers([]);
 
-    followedCities.forEach(async (followedCity) => {
-      await getWeather(followedCity);
+    followedCities.forEach(async (followedCity, index) => {
+      await getWeather(followedCity, index);
     });
 
     const getSearchedWeather = async () => {
@@ -60,8 +59,7 @@ export default function Main({ route, navigation }) {
     };
   }, [tempUnit, appLang, followedCities]);
 
-  const getWeather = async (cityName) => {
-    console.log(cityName);
+  const getWeather = async (cityName, index) => {
     const city = await fetch(
       `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=&appid=acbae9c57a24663635f3918fd4e8f0c7`
     )
@@ -74,15 +72,37 @@ export default function Main({ route, navigation }) {
       .then((response) => response.json())
       .then((data) => data);
 
+    const aqi = await fetch(
+      `https://api.waqi.info/feed/${cityName.replace(
+        " ",
+        ""
+      )}/?token=e34b1c19f2e24f056f1cde5ab21fe2cbccd1dd5b`
+    )
+      .then((response) => response.json())
+      .then((data) => data);
+
     setFollowedWeathers((prev) => [
       ...prev,
       {
+        timezone: weather.timezone,
         city: city[0].local_names[appLang],
         current: weather.current,
         hourly: weather.hourly,
         daily: weather.daily,
+        aqi: aqi.status === "ok" ? aqi.data.aqi : null,
       },
     ]);
+
+    if (index === 0) {
+      setDefaultWeather({
+        timezone: weather.timezone,
+        city: city[0].local_names[appLang],
+        current: weather.current,
+        hourly: weather.hourly,
+        daily: weather.daily,
+        aqi: aqi.status === "ok" ? aqi.data.aqi : null,
+      });
+    }
   };
 
   const handleSwipeOther = (index) => {
@@ -114,11 +134,7 @@ export default function Main({ route, navigation }) {
       >
         {followedWeathers.length > weatherIndex && (
           <ImageBackground
-            source={
-              weatherBackgrounds[
-                followedWeathers[weatherIndex].current.weather[0].icon
-              ]
-            }
+            source={getWeatherBg(followedWeathers[weatherIndex].current)}
             resizeMode="cover"
             style={styles.imageBackground}
           >

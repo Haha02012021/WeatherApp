@@ -10,13 +10,13 @@ import { Dimensions } from "react-native";
 import { ScrollView } from "react-native";
 import Accordion from "react-native-collapsible/Accordion";
 import Widget from "../../../Components/Widget";
-import { langs } from "../../../constant";
+import { colors, langs } from "../../../constant";
 import { AppContext } from "../../../Providers/AppProvider";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function WidgetList() {
-  const { appLang, tempUnit, followedCities, setFollowedCities } =
+  const { appLang, tempUnit, followedCities, darkTheme, setFollowedCities } =
     useContext(AppContext);
   const [weatherOfCities, setWeatherOfCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState([]);
@@ -96,8 +96,8 @@ export default function WidgetList() {
           linearGradientProps={{
             colors:
               sections[index].default === 0
-                ? ["#2E335A", "#1C1B33"]
-                : ["#000046", "#000046"],
+                ? [colors[darkTheme].color, colors[darkTheme].color]
+                : colors[darkTheme].gradient,
             start: { x: 0, y: 0.8 },
             end: { x: 1, y: 0.5 },
           }}
@@ -138,7 +138,6 @@ export default function WidgetList() {
           followedCities: newFollowCities,
         })
       );
-      console.log(appIndex, newFollowCities);
     }
   };
 

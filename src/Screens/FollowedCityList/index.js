@@ -4,20 +4,20 @@ import { useContext } from "react";
 import { StyleSheet } from "react-native";
 import { View } from "react-native";
 import { HeaderBar } from "../../Components/HeaderBar";
-import { langs } from "../../constant";
+import { colors, langs } from "../../constant";
 import { AppContext } from "../../Providers/AppProvider";
 import WidgetList from "./WidgetList";
 
 export default function FollowedCityList() {
   const navigation = useNavigation();
-  const { appLang } = useContext(AppContext);
+  const { appLang, darkTheme } = useContext(AppContext);
 
   const handleSetting = () => {
     navigation.navigate("Setting");
   };
   return (
     <LinearGradient
-      colors={["#2E335A", "#1C1B33"]}
+      colors={colors[darkTheme].gradient}
       start={[0, 0]}
       end={[Math.abs(Math.cos(168.44 / 180)), Math.abs(Math.sin(168.44 / 180))]}
       style={styles.container}

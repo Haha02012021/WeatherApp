@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { Image } from "react-native";
 import { Text } from "react-native";
 import { TouchableOpacity } from "react-native";
@@ -5,14 +6,17 @@ import { Dimensions } from "react-native";
 import { StyleSheet } from "react-native";
 import { View } from "react-native";
 import { weatherIcons } from "../assets/weather_icons";
+import { widgetDeco } from "../assets/widget_deco";
+import { AppContext } from "../Providers/AppProvider";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 export default function Widget({ weatherInfo }) {
+  const { darkTheme } = useContext(AppContext);
   return (
     <View style={{ marginVertical: "4%", zIndex: 0 }}>
       <Image
-        source={require("../assets/WidgetDeco.png")}
+        source={widgetDeco[darkTheme]}
         resizeMode="stretch"
         style={{
           width: SCREEN_WIDTH - 20 * 2 - 4,

@@ -9,6 +9,10 @@ export const weatherIcons = {
   "04n": require("./Clouds/04n.png"),
   "09d": require("./Rain/09d.png"),
   "10d": require("./Rain/10d.png"),
+  "10n": require("./Rain/10n.png"),
   "13d": require("./Rain/13d.png"),
   "11d": require("./Thunderstorm/11d.png"),
+  "11n": require("./Thunderstorm/11n.png"),
+  "50d": require("./Atmosphere/50d.png"),
+  "50n": require("./Atmosphere/50n.png"),
 };

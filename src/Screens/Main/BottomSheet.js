@@ -25,14 +25,15 @@ import { useState } from "react";
 import Accordion from "react-native-collapsible/Accordion";
 import WeeklyForcast from "../../Components/WeeklyForcast";
 import { weatherIcons } from "../../assets/weather_icons";
-import { langs } from "../../constant";
-import { convertDateTime } from "../../utils/methods";
+import { aqi, colors, langs } from "../../constant";
+import { convertDateTime, determineAirQuality } from "../../utils/methods";
+import { Slider } from "@rneui/themed";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const MAX_TRANSLATE_Y = -SCREEN_HEIGHT / 1.3;
 
 export default function BottomSheet({ nowWeather }) {
-  const { appLang, tempUnit } = useContext(AppContext);
+  const { appLang, tempUnit, darkTheme } = useContext(AppContext);
   const [isHourlyForecast, setHourlyForeCast] = useState(true);
   const [selectedHourly, setSelectedHourly] = useState(0);
   const translateY = useSharedValue(0);
@@ -44,11 +45,9 @@ export default function BottomSheet({ nowWeather }) {
   }, []);
   const gesture = Gesture.Pan()
     .onStart(() => {
-      // console.log("start");
       context.value = { y: translateY.value };
     })
     .onUpdate((event) => {
-      // console.log("update");
       translateY.value = event.translationY + context.value.y;
       translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
     })
@@ -109,7 +108,13 @@ export default function BottomSheet({ nowWeather }) {
   return (
     <GestureDetector gesture={gesture}>
       <>
-        <Animated.View style={[styles.container, rContainerStyle]}>
+        <Animated.View
+          style={[
+            styles.container,
+            rContainerStyle,
+            { backgroundColor: colors[darkTheme].gradient[0] },
+          ]}
+        >
           <Animated.View style={[styles.nowWeather]}>
             <Text style={{ fontSize: 34, color: "rgba(255, 255, 255, 0.7)" }}>
               {nowWeather.city}
@@ -166,7 +171,10 @@ export default function BottomSheet({ nowWeather }) {
                         <View
                           style={[
                             styles.hourly,
-                            selectedHourly === index && styles.activeHourly,
+                            selectedHourly === index && {
+                              backgroundColor: colors[darkTheme].color,
+                              ...styles.activeHourly,
+                            },
                           ]}
                         >
                           <Text style={[styles.hourlyText, styles.hour]}>
@@ -192,6 +200,39 @@ export default function BottomSheet({ nowWeather }) {
               </View>
               <ScrollView>
                 <Animated.View style={[styles.widget, rWidetStyle]}>
+                  {nowWeather.aqi && (
+                    <View>
+                      <Text style={styles.aqiText}>
+                        AQI {nowWeather.aqi} -{" "}
+                        {langs[appLang][determineAirQuality(nowWeather.aqi)]}
+                      </Text>
+                      <LinearGradient
+                        start={[0, 0]}
+                        end={[1, 0]}
+                        locations={[0.1, 0.2, 0.3, 0.4, 0.6, 1]}
+                        colors={[
+                          aqi.good.color,
+                          aqi.medium.color,
+                          aqi.least.color,
+                          aqi.bad.color,
+                          aqi.damnable.color,
+                          aqi.dangerous.color,
+                        ]}
+                        style={styles.linearGradientSlider}
+                      >
+                        <Slider
+                          minimumTrackTintColor={"transparent"}
+                          maximumTrackTintColor={"transparent"}
+                          minimumValue={0}
+                          maximumValue={500}
+                          thumbStyle={styles.brightThumb}
+                          trackStyle={{ height: 15 }}
+                          value={nowWeather.aqi}
+                          disabled={true}
+                        />
+                      </LinearGradient>
+                    </View>
+                  )}
                   <Card
                     iconName={"sun"}
                     cardName={langs[appLang].uvi}
@@ -206,9 +247,15 @@ export default function BottomSheet({ nowWeather }) {
                     iconName={"sunrise"}
                     cardName={langs[appLang].sunrise}
                     value={
-                      convertDateTime(nowWeather.current.sunrise).hour +
+                      convertDateTime(
+                        nowWeather.current.sunrise,
+                        nowWeather.timezone
+                      ).hour +
                       ":" +
-                      convertDateTime(nowWeather.current.sunrise).minute
+                      convertDateTime(
+                        nowWeather.current.sunrise,
+                        nowWeather.timezone
+                      ).minute
                     }
                     smallNote={
                       <Text
@@ -219,8 +266,19 @@ export default function BottomSheet({ nowWeather }) {
                         }}
                       >
                         {langs[appLang].sunset}:{" "}
-                        {convertDateTime(nowWeather.current.sunset).hour}:
-                        {convertDateTime(nowWeather.current.sunset).minute}
+                        {
+                          convertDateTime(
+                            nowWeather.current.sunset,
+                            nowWeather.timezone
+                          ).hour
+                        }
+                        :
+                        {
+                          convertDateTime(
+                            nowWeather.current.sunset,
+                            nowWeather.timezone
+                          ).minute
+                        }
                       </Text>
                     }
                   />
@@ -336,7 +394,6 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     borderRadius: 44,
     opacity: 0.95,
-    backgroundColor: "#2E335A",
   },
   nowWeather: {
     top: -124,
@@ -463,7 +520,6 @@ const styles = StyleSheet.create({
   activeHourly: {
     height: 146,
     width: 60,
-    backgroundColor: "rgba(72, 49, 157, 0.5)",
     borderWidth: 1,
     borderRadius: 30,
     borderColor: "rgba(255, 255, 255, 0.5)",
@@ -508,5 +564,25 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     bottom: 0,
     zIndex: 4,
+  },
+
+  linearGradientSlider: {
+    borderRadius: 20,
+    height: 8,
+    justifyContent: "center",
+    marginBottom: 16,
+    width: SCREEN_WIDTH - 2 * 36,
+  },
+  brightThumb: {
+    backgroundColor: "white",
+    borderColor: "grey",
+    borderRadius: 10,
+    borderWidth: 4,
+    height: 16,
+    width: 16,
+  },
+  aqiText: {
+    color: "rgba(255, 255, 255, 0.8)",
+    marginBottom: 8,
   },
 });

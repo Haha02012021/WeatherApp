@@ -6,7 +6,7 @@ import { useContext, useEffect, useState } from "react";
 import { Alert } from "react-native";
 import { View, StyleSheet, Text } from "react-native";
 import { Dimensions, ScrollView } from "react-native";
-import { langs } from "../../constant";
+import { colors, langs } from "../../constant";
 import { AppContext } from "../../Providers/AppProvider";
 import { convertDateTime } from "../../utils/methods/index";
 import Detail from "./Detail";
@@ -22,7 +22,7 @@ const chartConfig = {
 
 export default function CityWeather({ route, navigation }) {
   const city = route.params.city;
-  const { appLang, tempUnit, followedCities, setFollowedCities } =
+  const { appLang, tempUnit, followedCities, darkTheme, setFollowedCities } =
     useContext(AppContext);
   const [weather, setWeather] = useState();
   const [chartData, setChartData] = useState();
@@ -81,7 +81,6 @@ export default function CityWeather({ route, navigation }) {
   }, [weather, forecast]);
 
   const getWeather = async (cityName) => {
-    console.log(cityName);
     const city = await fetch(
       `https://api.openweathermap.org/geo/1.0/direct?q=${cityName}&limit=&appid=acbae9c57a24663635f3918fd4e8f0c7`
     )
@@ -159,7 +158,7 @@ export default function CityWeather({ route, navigation }) {
     <>
       {weather && (
         <LinearGradient
-          colors={["#2E335A", "#1C1B33"]}
+          colors={colors[darkTheme].gradient}
           start={[0, 0]}
           end={[
             Math.abs(Math.cos(168.44 / 180)),

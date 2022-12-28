@@ -18,11 +18,15 @@ export default function Header({ city, currentWeather, onClickForecastType }) {
         <Text style={styles.text}>{currentWeather.temp}°</Text>
       </View>
       <View style={styles.bottom}>
-        <Image
-          source={weatherIcons[currentWeather.weather[0].icon]}
-          resizeMode="contain"
-          style={styles.weatherIcon}
-        />
+        {weatherIcons[currentWeather.weather[0].icon] ? (
+          <Image
+            source={weatherIcons[currentWeather.weather[0].icon]}
+            resizeMode="contain"
+            style={styles.weatherIcon}
+          />
+        ) : (
+          <Text>{currentWeather.weather[0].icon}</Text>
+        )}
         <Text style={[styles.text, styles.descrip]}>
           {formatText(currentWeather.weather[0].description)}
         </Text>
