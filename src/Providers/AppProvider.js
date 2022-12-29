@@ -7,7 +7,7 @@ export default function AppProvider({ children }) {
   const [isTheFirst, setTheFirst] = useState(true);
   const [appLang, setAppLang] = useState("vi");
   const [tempUnit, setTempUnit] = useState("metric");
-  const [followedCities, setFollowedCities] = useState(["ha noi", "thai binh"]);
+  const [followedCities, setFollowedCities] = useState(["hà nội", "thái bình"]);
   const [darkTheme, setDarkTheme] = useState(0);
 
   useEffect(() => {}, []);

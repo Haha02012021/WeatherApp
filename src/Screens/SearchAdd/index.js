@@ -17,7 +17,7 @@ export default function SearchAdd({ navigation }) {
 
   const handleChooseCity = (city) => {
     navigation.navigate("CityWeather", {
-      city: city.toLowerCase(),
+      city: city.toLowerCase().trim(),
     });
   };
 

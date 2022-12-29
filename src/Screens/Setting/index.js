@@ -43,7 +43,7 @@ export default function Setting({ navigation }) {
           isTheFirst: false,
           lang: "vi",
           unit: "metric",
-          followedCities: ["ha noi", "thai binh"],
+          followedCities: ["hà nội", "thái bình"],
         })
       );
     };
